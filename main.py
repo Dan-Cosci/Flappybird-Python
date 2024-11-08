@@ -1,3 +1,8 @@
+import pygame
+import os
+import json
+
+from src import config
 
 def main():
     print("Hello world")
