@@ -17,14 +17,7 @@ Flappy = bird.Bird(config.SCREENWIDTH/2, config.SCREENHEIGTH/2, 1.3)
 
 run = True
 
-
-while run:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
-    screen.fill('black')
-
+def draw(screen):
     bg.draw(screen)
     bg.update()
 
@@ -33,6 +26,18 @@ while run:
 
     Flappy.draw(screen)
     Flappy.update()
+
+
+while run:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            Flappy.flap()
+
+    screen.fill('black')
+
+    draw(screen)
 
     clock.tick(config.FPS)
     pygame.display.flip()
