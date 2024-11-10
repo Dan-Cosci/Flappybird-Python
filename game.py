@@ -24,6 +24,11 @@ while run:
 
     screen.fill('black')
 
+    pos = pygame.mouse.get_pos()
+    
+    if grd.img_rect.collidepoint(pos):
+        print("collision")
+
     bg.draw(screen)
     bg.update()
 

@@ -1,4 +1,5 @@
 import pygame
+import math
 from src import config
 
 class Ground(pygame.sprite.Sprite):
@@ -8,19 +9,20 @@ class Ground(pygame.sprite.Sprite):
         self.img = pygame.image.load('assets/ground.png').convert_alpha()
         self.img = pygame.transform.scale_by(self.img, scale)
         self.img_rect = self.img.get_rect(topleft = (x,y))
-        self.img_rect2 = self.img.get_rect(topleft = (self.img.get_width(), y))
-    
+
+        self.bg_width = self.img.get_width()
+        self.scroll = 0
     
     def draw(self, screen):
-        screen.blit(self.img, self.img_rect)
-        screen.blit(self.img, self.img_rect2)
+
+        panel = math.ceil(config.SCREENWIDTH/ self.bg_width) + 2
+
+        for i in range(panel):
+            self.img_rect.x = i * self.bg_width + self.scroll - self.bg_width
+            screen.blit(self.img,(self.img_rect.x, self.img_rect.y))
 
     def update(self):
-        self.img_rect.x -= config.GROUND_SPD
-        self.img_rect2.x -= config.GROUND_SPD
-
-        if self.img_rect.right <= 0:
-            self.img_rect.x = self.img_rect2.right 
-
-        if self.img_rect2.right <= 0:
-            self.img_rect2.x = self.img_rect.right    
+        self.scroll -= config.GROUND_SPD
+        self.img_rect.x = self.scroll
+        if abs(self.scroll)> self.bg_width:
+            self.scroll = 0
