@@ -13,16 +13,19 @@ class Ground(pygame.sprite.Sprite):
         self.bg_width = self.img.get_width()
         self.scroll = 0
     
+
     def draw(self, screen):
 
         panel = math.ceil(config.SCREENWIDTH/ self.bg_width) + 2
 
         for i in range(panel):
-            self.img_rect.x = i * self.bg_width + self.scroll - self.bg_width
-            screen.blit(self.img,(self.img_rect.x, self.img_rect.y))
+            # self.img_rect.x  
+            temp = i * self.bg_width + self.scroll - self.bg_width
+            screen.blit(self.img,(temp, self.img_rect.y))
+
 
     def update(self):
         self.scroll -= config.GROUND_SPD
-        self.img_rect.x = self.scroll
+        # self.img_rect.x = self.scroll
         if abs(self.scroll)> self.bg_width:
             self.scroll = 0
