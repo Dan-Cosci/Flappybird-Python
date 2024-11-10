@@ -4,7 +4,6 @@ from objects import background, bird, button, ground, pipe
 from src import config
 
 
-
 pygame.init()
 screen = pygame.display.set_mode((config.SCREENWIDTH, config.SCREENHEIGTH))
 pygame.display.set_caption("FlappyBird")
@@ -13,6 +12,8 @@ clock = pygame.time.Clock()
 
 bg = background.Background(0, 0, 1.2)
 grd = ground.Ground(0, (config.SCREENHEIGTH - (config.SCREENHEIGTH // 6)), 1.2)
+
+Flappy = bird.Bird(config.SCREENWIDTH/2, config.SCREENHEIGTH/2, 1.3)
 
 run = True
 
@@ -34,6 +35,8 @@ while run:
 
     grd.draw(screen)
     grd.update()
+
+    Flappy.draw(screen)
 
     clock.tick(config.FPS)
     pygame.display.flip()
