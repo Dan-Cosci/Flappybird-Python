@@ -13,7 +13,8 @@ pygame.display.set_icon(pygame.image.load('assets/bird1.png'))
 bg = background.Background(0, 0, 1.2)
 grd = ground.Ground(0, (config.SCREENHEIGTH - (config.SCREENHEIGTH // 6)), 1.2)
 
-start = button.Button(config.SCREENWIDTH/2, config.SCREENHEIGTH/2, 1.3)
+start_img = pygame.image.load("assets/play.png").convert_alpha()
+start = button.Button(config.SCREENWIDTH/2, config.SCREENHEIGTH/2, 1.3, start_img)
 
 Flappy = bird.Bird(config.SCREENWIDTH/2, config.SCREENHEIGTH/2, 1.3)
 
@@ -49,6 +50,8 @@ while run:
     
     if game:
         update()
+    else:
+        start.draw(screen)
 
     if Flappy.img_rect.colliderect(grd.img_rect):
         game = False
