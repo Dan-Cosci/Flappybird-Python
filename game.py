@@ -4,8 +4,59 @@ from objects import background, bird, button, ground, pipe
 from src import config
 
 
+# main game class
 class Game():
     def __init__(self):
         
-        
+        # initializing pygame module
         pygame.init()
+        self.display = pygame.Surface((config.WIDTH, config.HEIGHT))
+        self.window = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
+        self.clock = pygame.time.Clock()
+        pygame.display.set_caption("Flappybird")
+        pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
+
+        # initializes background and ground
+        self.bg = background.Background(0, 0, 1.2)
+        self.grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
+
+        # initializes the bird
+        self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3)
+
+        # codition required for the loop
+        self.running, self.playing = True, False
+
+
+    def draw(self):
+        self.display.fill((0,0,0))
+
+        self.bg.draw(self.display)
+        
+        self.Flappy.draw(self.display)
+        self.grd.draw(self.display)
+
+        self.bg.update()
+        self.grd.update()
+        self.Flappy.update()
+        
+        self.window.blit(self.display, (0,0))
+        pygame.display.update()
+                                              
+    def game_loop(self):
+        while self.playing:
+            self.check_events()
+
+            self.draw()
+
+            self.clock.tick(config.FPS)
+
+
+    def check_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running, self.playing = False, False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.Flappy.flap()
+        
+        if self.Flappy.img_rect.colliderect(self.grd.img_rect):
+            self.running, self.playing = False, False

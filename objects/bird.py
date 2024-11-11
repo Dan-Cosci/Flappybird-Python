@@ -7,9 +7,9 @@ class Bird(pygame.sprite.Sprite):
 
         # loading the images
         self.imgs =  [
-            pygame.transform.scale_by(pygame.image.load('assets/bird1.png').convert_alpha(), scale),
-            pygame.transform.scale_by(pygame.image.load('assets/bird2.png').convert_alpha(), scale),
-            pygame.transform.scale_by(pygame.image.load('assets/bird3.png').convert_alpha(), scale)
+            pygame.transform.scale_by(pygame.image.load('assets/images/bird1.png').convert_alpha(), scale),
+            pygame.transform.scale_by(pygame.image.load('assets/images/bird2.png').convert_alpha(), scale),
+            pygame.transform.scale_by(pygame.image.load('assets/images/bird3.png').convert_alpha(), scale)
         ]
 
         # miscellaneous image requirements

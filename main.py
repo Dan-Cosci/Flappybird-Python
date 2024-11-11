@@ -1,12 +1,8 @@
-import pygame
-import os
-import json
-
-from src import config
-
-def main():
-    print("Hello world")
+from game import Game
 
 
-if __name__ == "__main__":
-    main()
+g = Game()
+
+while g.running:
+    g.playing = True
+    g.game_loop()
