@@ -2,6 +2,7 @@ import pygame
 
 from objects import background, bird, button, ground, pipe
 from src import config
+from menu import MainMenu
 
 
 
@@ -28,6 +29,9 @@ class Game():
 
         # initializes the bird
         self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3)
+
+        # menu
+        self.cur_menu = MainMenu(self)
 
         # codition required for the loop
         self.running, self.playing = True, False
@@ -67,8 +71,11 @@ class Game():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
+                self.cur_menu.run_display = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.Flappy.flap()
-        
+                self.cur_menu.run_display = False
+                self.playing = True
+                
         if self.Flappy.img_rect.colliderect(self.grd.img_rect):
             self.running, self.playing = False, False
