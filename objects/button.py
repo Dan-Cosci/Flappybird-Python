@@ -16,5 +16,8 @@ class Button(pygame.sprite.Sprite):
     def update(self):
         pass
 
+    def rect (self):
+        return self.img_rect
+    
     def click(self):
-        pass
+        print('hello')
