@@ -4,6 +4,7 @@ from objects import background, bird, button, ground, pipe
 from src import config
 
 
+
 # main game class
 class Game():
     def __init__(self):
@@ -16,6 +17,11 @@ class Game():
         pygame.display.set_caption("Flappybird")
         pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
 
+        # new custom cursor
+        self.cursor = pygame.image.load("assets/ui_elements/cursor.png").convert_alpha()
+        self.cursor = pygame.transform.scale_by(self.cursor, 3.5)
+        pygame.mouse.set_visible(False)
+
         # initializes background and ground
         self.bg = background.Background(0, 0, 1.2)
         self.grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
@@ -25,6 +31,11 @@ class Game():
 
         # codition required for the loop
         self.running, self.playing = True, False
+
+
+    def mouse_cursor(self):
+        pos = pygame.mouse.get_pos()
+        self.display.blit(self.cursor, pos)
 
 
     def draw(self):
@@ -38,7 +49,8 @@ class Game():
         self.bg.update()
         self.grd.update()
         self.Flappy.update()
-        
+
+        self.mouse_cursor()
         self.window.blit(self.display, (0,0))
         pygame.display.update()
                                               
