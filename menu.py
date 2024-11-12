@@ -1,7 +1,6 @@
 import pygame
 
 from src import config, service
-from objects import button
 
 class Menu():
     def __init__(self, game):
@@ -26,17 +25,20 @@ class Menu():
 class MainMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
-        self.start = button.Button(200,200,2,pygame.image.load("assets/ui_elements/play.png").convert_alpha())
-    
+        self.play = pygame.image.load("assets/ui_elements/play.png").convert_alpha()
+        self.play = pygame.transform.scale_by(self.play, 1.2)
+        self.start_rect = self.play.get_rect(center = (config.WIDTH / 2, config.HEIGHT / 2))
+        
     def display_menu(self):
         while self.run_display:
             self.base_background()
 
             service.draw_text("FlappyBird", 60, config.WIDTH/ 2, service.sine(100,2500,25,(config.HEIGHT / 6)), self.game.display)
-            self.start.draw(self.game.display)
-            self.start.click(self.mouse_pos)
-            self.game.mouse_cursor()
-            
+            self.game.display.blit(self.play, self.start_rect)
+            if self.start_rect.collidepoint(self.mouse_pos):
+                print("bithc")
+                
+
             self.blit_screen()
 
         

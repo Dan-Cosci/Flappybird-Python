@@ -1,6 +1,6 @@
 import pygame
 
-from objects import background, bird, button, ground, pipe
+from objects import background, bird, ground, pipe
 from src import config
 from menu import MainMenu
 
@@ -18,11 +18,6 @@ class Game():
         pygame.display.set_caption("Flappybird")
         pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
 
-        # new custom cursor
-        self.cursor = pygame.image.load("assets/ui_elements/cursor.png").convert_alpha()
-        self.cursor = pygame.transform.scale_by(self.cursor, 3.5)
-        pygame.mouse.set_visible(False)
-
         # initializes background and ground
         self.bg = background.Background(0, 0, 1.2)
         self.grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
@@ -37,11 +32,6 @@ class Game():
         self.running, self.playing = True, False
 
 
-    def mouse_cursor(self):
-        pos = pygame.mouse.get_pos()
-        self.display.blit(self.cursor, pos)
-
-
     def draw(self):
         self.display.fill((0,0,0))
 
@@ -54,7 +44,6 @@ class Game():
         self.grd.update()
         self.Flappy.update()
 
-        self.mouse_cursor()
         self.window.blit(self.display, (0,0))
         pygame.display.update()
                                               
@@ -76,6 +65,11 @@ class Game():
                 self.Flappy.flap()
                 self.cur_menu.run_display = False
                 self.playing = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.Flappy.flap()
+                    self.cur_menu.run_display = False
+                    self.playing = True
                 
         if self.Flappy.img_rect.colliderect(self.grd.img_rect):
             self.running, self.playing = False, False
