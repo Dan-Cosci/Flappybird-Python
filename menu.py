@@ -14,6 +14,9 @@ class Menu():
         self.game.bg.draw(self.game.display)
         self.game.grd.draw(self.game.display)
         self.mouse_pos = pygame.mouse.get_pos()
+        
+        self.game.bg.update()
+        self.game.grd.update()
 
 
     def blit_screen(self):
@@ -27,15 +30,30 @@ class MainMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         
+        self.mouse_hover = False
+
         # start button image
         self.play = pygame.image.load("assets/ui_elements/play.png").convert_alpha()
         self.play = pygame.transform.scale_by(self.play, 1.2)
         self.start_rect = self.play.get_rect(center = (config.WIDTH / 2, config.HEIGHT / 2))
         
+        self.start_hover = False
+
+        self.play2 = pygame.image.load("assets/ui_elements/play.png").convert_alpha()
+        self.play2 = pygame.transform.scale_by(self.play2, 1.25)
+        self.start_rect2 = self.play2.get_rect(center = (config.WIDTH / 2, config.HEIGHT / 2))
+
         # quit
-        self.option_button = pygame.image.load("assets/ui_elements/option.png").convert_alpha()
-        self.option_button = pygame.transform.scale_by(self.option_button, 1.2)
-        self.options_rect = self.option_button.get_rect(center = (config.WIDTH / 2, config.HEIGHT / 2 + 45))
+        self.quit_button = pygame.image.load("assets/ui_elements/quit.png").convert_alpha()
+        self.quit_button = pygame.transform.scale_by(self.quit_button, 1.2)
+        self.quit_rect = self.quit_button.get_rect(center = (config.WIDTH / 2, config.HEIGHT / 2 + 45))
+
+        self.quit_hover = False
+
+        self.quit_button2 = pygame.image.load("assets/ui_elements/quit.png").convert_alpha()
+        self.quit_button2 = pygame.transform.scale_by(self.quit_button2, 1.25)
+        self.quit_rect2 = self.quit_button2.get_rect(center = (config.WIDTH / 2, config.HEIGHT / 2 + 45))
+
 
     def display_menu(self):
         while self.run_display:
@@ -46,7 +64,15 @@ class MainMenu(Menu):
             self.blit_screen()
 
     def play_button(self):
+        
+        # base menu buttons
         self.game.display.blit(self.play, self.start_rect)
-        self.game.display.blit(self.option_button, self.options_rect)
+        self.game.display.blit(self.quit_button, self.quit_rect)
 
+        # animation for the menu buttons
+        if self.mouse_hover:
+            if self.start_hover:
+                self.game.display.blit(self.play2, self.start_rect2)
+            if self.quit_hover:
+                self.game.display.blit(self.quit_button2, self.quit_rect2)
         

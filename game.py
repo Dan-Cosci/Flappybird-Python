@@ -18,9 +18,8 @@ class Game():
         pygame.display.set_caption("Flappybird")
         pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
 
-
+        # for the game to not start immediately
         self.start = False
-
 
         # initializes background and ground
         self.bg = background.Background(0, 0, 1.2)
@@ -73,12 +72,29 @@ class Game():
                 self.cur_menu.run_display = False
 
             if self.cur_menu.state == "menu":
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
+
+                if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
+                    self.cur_menu.mouse_hover = True
+                    self.cur_menu.start_hover = True
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
                         self.cur_menu.state = "game"
                         self.playing = True
                         self.start = False
                         self.cur_menu.run_display = False
+
+                elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
+                    self.cur_menu.mouse_hover = True
+                    self.cur_menu.quit_hover = True
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.running, self.playing = False, False
+                        self.cur_menu.run_display = False 
+
+                else:
+                    self.cur_menu.mouse_hover = False
+                    self.cur_menu.start_hover = False
+                    self.cur_menu.quit_hover = False
             
             elif self.cur_menu.state == "game":
                 if event.type == pygame.MOUSEBUTTONDOWN:
