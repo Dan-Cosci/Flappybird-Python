@@ -17,7 +17,8 @@ class Bird(pygame.sprite.Sprite):
         self.ani_helper = 1
         self.cur_img = self.imgs[self.img_index]
         self.img_rect = self.cur_img.get_rect(center = (x, y))
-        
+        self.reset_rect = self.cur_img.get_rect(center = (x,y))
+
         self.counter = 0
         self.cooldown = 4
 
@@ -50,6 +51,10 @@ class Bird(pygame.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.cur_img, self.img_rect)
+    
+    
+    def reset(self):
+        self.img_rect.x, self.img_rect.y = self.reset_rect.x, self.reset_rect.y
 
 
     def flap(self):

@@ -18,6 +18,10 @@ class Game():
         pygame.display.set_caption("Flappybird")
         pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
 
+
+        self.start = False
+
+
         # initializes background and ground
         self.bg = background.Background(0, 0, 1.2)
         self.grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
@@ -40,18 +44,24 @@ class Game():
         self.Flappy.draw(self.display)
         self.grd.draw(self.display)
 
-        self.bg.update()
-        self.grd.update()
-        self.Flappy.update()
 
         self.window.blit(self.display, (0,0))
         pygame.display.update()
+
+
+    def update(self):
+        self.bg.update()
+        self.grd.update()
+        self.Flappy.update()
+        
                                               
     def game_loop(self):
         while self.playing:
             self.check_events()
 
             self.draw()
+            if self.start:
+                self.update()
 
             self.clock.tick(config.FPS)
 
@@ -61,15 +71,24 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.cur_menu.run_display = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.Flappy.flap()
-                self.cur_menu.run_display = False
-                self.playing = True
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+
+            if self.cur_menu.state == "menu":
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.state = "game"
+                        self.playing = True
+                        self.start = False
+                        self.cur_menu.run_display = False
+            
+            elif self.cur_menu.state == "game":
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.start = True
                     self.Flappy.flap()
-                    self.cur_menu.run_display = False
-                    self.playing = True
+                
                 
         if self.Flappy.img_rect.colliderect(self.grd.img_rect):
-            self.running, self.playing = False, False
+            self.playing = False
+            self.cur_menu.state = "menu"
+            self.cur_menu.run_display = True
+            self.Flappy.reset()
+            self.start = False
