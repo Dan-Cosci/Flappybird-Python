@@ -24,7 +24,7 @@ class Bird(pygame.sprite.Sprite):
 
         # gravity requirements
         self.g_index = 1
-        self.g_max = 12
+        self.g_max = 15
         self.gravity = 0
 
 

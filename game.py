@@ -28,6 +28,10 @@ class Game():
         # initializes the bird
         self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3)
 
+        # initializes the pipe
+        self.top_pipe = pipe.Pipe(config.WIDTH / 2, config.HEIGHT / 2, 1.3, 0)
+        self.btm_pipe = pipe.Pipe(config.WIDTH / 2, config.HEIGHT / 2, 1.3, 1)
+
         # menu
         self.cur_menu = MainMenu(self)
 
@@ -39,6 +43,9 @@ class Game():
         self.display.fill((0,0,0))
 
         self.bg.draw(self.display)
+
+        self.top_pipe.draw(self.display)
+        self.btm_pipe.draw(self.display)
         
         self.Flappy.draw(self.display)
         self.grd.draw(self.display)
@@ -76,6 +83,7 @@ class Game():
                 if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
                     self.cur_menu.mouse_hover = True
                     self.cur_menu.start_hover = True
+                    self.cur_menu.quit_hover = False
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.cur_menu.state = "game"
@@ -86,6 +94,7 @@ class Game():
                 elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
                     self.cur_menu.mouse_hover = True
                     self.cur_menu.quit_hover = True
+                    self.cur_menu.start_hover = False
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.running, self.playing = False, False
