@@ -1,4 +1,5 @@
 import pygame
+import random
 
 from objects import background, bird, ground, pipe
 from src import config
@@ -29,8 +30,10 @@ class Game():
         self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3)
 
         # initializes the pipe
-        self.top_pipe = pipe.Pipe(config.WIDTH / 2, config.HEIGHT / 2, 1.3, 0)
-        self.btm_pipe = pipe.Pipe(config.WIDTH / 2, config.HEIGHT / 2, 1.3, 1)
+        self.pipe_group = pygame.sprite.Group()
+        self.pipe_gap = 150
+        self.last_pipe = pygame.time.get_ticks()
+        self.pipe_freq = 2000
 
         # menu
         self.cur_menu = MainMenu(self)
@@ -44,8 +47,7 @@ class Game():
 
         self.bg.draw(self.display)
 
-        self.top_pipe.draw(self.display)
-        self.btm_pipe.draw(self.display)
+        self.pipe_group.draw(self.display)
         
         self.Flappy.draw(self.display)
         self.grd.draw(self.display)
@@ -59,6 +61,7 @@ class Game():
         self.bg.update()
         self.grd.update()
         self.Flappy.update()
+        self.pipe_group.update()
         
                                               
     def game_loop(self):
@@ -68,8 +71,24 @@ class Game():
             self.draw()
             if self.start:
                 self.update()
+                self.pipe_gen()
 
             self.clock.tick(config.FPS)
+
+
+    def pipe_gen(self):
+        
+        timenow = pygame.time.get_ticks()
+        if timenow - self.last_pipe > self.pipe_freq:
+            pipe_height = random.randint(150, 500)
+            print(pipe_height)
+
+            self.top_pipe = pipe.Pipe(config.WIDTH, pipe_height - self.pipe_gap / 2, 1, 0)
+            self.btm_pipe = pipe.Pipe(config.WIDTH, pipe_height + self.pipe_gap / 2, 1, 1)
+
+            self.pipe_group.add(self.btm_pipe)
+            self.pipe_group.add(self.top_pipe)
+            self.last_pipe = timenow
 
 
     def check_events(self):
@@ -115,5 +134,8 @@ class Game():
             self.playing = False
             self.cur_menu.state = "menu"
             self.cur_menu.run_display = True
+            
             self.Flappy.reset()
+            self.pipe_group.empty()
+
             self.start = False

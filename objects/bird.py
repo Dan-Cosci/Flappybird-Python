@@ -59,4 +59,4 @@ class Bird(pygame.sprite.Sprite):
 
     def flap(self):
         self.gravity = 0
-        self.gravity -= 15
+        self.gravity -= 12
