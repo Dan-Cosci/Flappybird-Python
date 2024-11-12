@@ -2,8 +2,11 @@ import pygame
 from src import config
 
 class Bird(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale):
+    def __init__(self, x, y, scale, game):
         pygame.sprite.Sprite.__init__(self)
+
+        # game instance in the class
+        self.game = game
 
         # loading the images
         self.imgs =  [
@@ -19,8 +22,10 @@ class Bird(pygame.sprite.Sprite):
         self.img_rect = self.cur_img.get_rect(center = (x, y))
         self.reset_rect = self.cur_img.get_rect(center = (x,y))
 
+        self.bird_dead = pygame.transform.rotate(self.cur_img, -90)
+
         self.counter = 0
-        self.cooldown = 4
+        self.cooldown = 3
 
         # gravity requirements
         self.g_index = 1
@@ -30,17 +35,22 @@ class Bird(pygame.sprite.Sprite):
 
     def update(self):
         
-        # code of the bird's animation
-        self.counter += 1
+        if not(self.game.bird_hit):
 
-        if self.counter > self.cooldown:
-            self.counter = 0
-            self.img_index += self.ani_helper
+            # code of the bird's animation
+            self.counter += 1
 
-            if self.img_index >= len(self.imgs) - 1 or self.img_index <= 0:
-                self.ani_helper *= -1
+            if self.counter > self.cooldown:
+                self.counter = 0
+                self.img_index += self.ani_helper
+
+                if self.img_index >= len(self.imgs) - 1 or self.img_index <= 0:
+                    self.ani_helper *= -1
+            
+            self.cur_img = self.imgs[self.img_index]
         
-        self.cur_img = self.imgs[self.img_index]
+        else:
+            self.cur_img = self.bird_dead
 
         # gravity logic
         if self.gravity <= self.g_max:    
@@ -55,6 +65,7 @@ class Bird(pygame.sprite.Sprite):
     
     def reset(self):
         self.img_rect.x, self.img_rect.y = self.reset_rect.x, self.reset_rect.y
+        self.cur_img = self.imgs[self.img_index]
 
 
     def flap(self):

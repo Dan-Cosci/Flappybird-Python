@@ -21,13 +21,14 @@ class Game():
 
         # for the game to not start immediately
         self.start = False
+        self.bird_hit = False
 
         # initializes background and ground
         self.bg = background.Background(0, 0, 1.2)
         self.grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
 
         # initializes the bird
-        self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3)
+        self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3, self)
 
         # initializes the pipe
         self.pipe_group = pygame.sprite.Group()
@@ -58,10 +59,13 @@ class Game():
 
 
     def update(self):
-        self.bg.update()
-        self.grd.update()
+        
+        if not(self.bird_hit):
+            self.bg.update()
+            self.grd.update()
+            self.pipe_group.update()
+
         self.Flappy.update()
-        self.pipe_group.update()
         
                                               
     def game_loop(self):
@@ -81,7 +85,6 @@ class Game():
         timenow = pygame.time.get_ticks()
         if timenow - self.last_pipe > self.pipe_freq:
             pipe_height = random.randint(150, 500)
-            print(pipe_height)
 
             self.top_pipe = pipe.Pipe(config.WIDTH, pipe_height - self.pipe_gap / 2, 1, 0)
             self.btm_pipe = pipe.Pipe(config.WIDTH, pipe_height + self.pipe_gap / 2, 1, 1)
@@ -92,6 +95,8 @@ class Game():
 
 
     def check_events(self):
+
+        # for loop for pygame events only
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
@@ -127,15 +132,23 @@ class Game():
             elif self.cur_menu.state == "game":
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.start = True
-                    self.Flappy.flap()
-                
-                
-        if self.Flappy.img_rect.colliderect(self.grd.img_rect):
-            self.playing = False
-            self.cur_menu.state = "menu"
-            self.cur_menu.run_display = True
-            
-            self.Flappy.reset()
-            self.pipe_group.empty()
+                    if not(self.bird_hit):
+                        self.Flappy.flap()
 
-            self.start = False
+        # what the check function does when the game state is = "game" 
+        if self.cur_menu.state == "game":        
+            for tubo in self.pipe_group:
+                if self.Flappy.img_rect.colliderect(tubo.rect):
+                    self.bird_hit = True
+                        
+            if self.Flappy.img_rect.colliderect(self.grd.img_rect):
+                self.playing = False
+                self.cur_menu.state = "menu"
+                self.cur_menu.run_display = True
+                    
+                self.Flappy.reset()
+                self.pipe_group.empty()
+
+                self.start = False
+                self.bird_hit = False
+                    
