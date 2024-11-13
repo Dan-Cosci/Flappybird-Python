@@ -15,6 +15,7 @@ class Pipe(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(self.image, False, True)
             self.image = pygame.transform.scale_by(self.image, scale)
             self.rect = self.image.get_rect(bottomleft = (x,y))
+        
         else:
             self.image = pygame.transform.scale_by(self.image, scale)
             self.rect = self.image.get_rect(topleft = (x,y))
