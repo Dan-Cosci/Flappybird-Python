@@ -2,7 +2,7 @@ import pygame
 import random
 
 from objects import background, bird, ground, pipe
-from src import config
+from src import config, service
 from menu import MainMenu
 
 
@@ -13,11 +13,21 @@ class Game():
         
         # initializing pygame module
         pygame.init()
+        pygame.mixer.pre_init()
+        pygame.mixer.init
+
+        # load display
         self.display = pygame.Surface((config.WIDTH, config.HEIGHT))
         self.window = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("Flappybird")
         pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
+
+        #load sounds
+        self.flap_fx = pygame.mixer.Sound("assets/sound/flap.wav")
+        self.point_fx = pygame.mixer.Sound("assets/sound/point.wav")
+        self.death_fx = pygame.mixer.Sound("assets/sound/die.wav")
+        self.hit_fx = pygame.mixer.Sound("assets/sound/hit.wav")
 
         # for the game to not start immediately
         self.start = False
@@ -32,12 +42,16 @@ class Game():
 
         # initializes the pipe
         self.pipe_group = pygame.sprite.Group()
-        self.pipe_gap = 150
+        self.pipe_gap = 200
         self.last_pipe = pygame.time.get_ticks()
-        self.pipe_freq = 1500
+        self.pipe_freq = 1200
 
         # menu
         self.cur_menu = MainMenu(self)
+
+        # initialization score
+        self.score = 0
+        self.passed = False
 
         # codition required for the loop
         self.running, self.playing = True, False
@@ -52,6 +66,8 @@ class Game():
         
         self.Flappy.draw(self.display)
         self.grd.draw(self.display)
+
+        self.text = service.draw_text(str(self.score), 40, config.WIDTH / 2, config.HEIGHT / 8, self.display)
 
 
         self.window.blit(self.display, (0,0))
@@ -136,18 +152,43 @@ class Game():
                         self.Flappy.flap()
 
         # what the check function does when the game state is = "game" 
-        if self.cur_menu.state == "game":        
+        if self.cur_menu.state == "game":
+
             for tubo in self.pipe_group:
                 if self.Flappy.img_rect.colliderect(tubo.rect):
                     self.bird_hit = True
-                        
+                    
+                    # the sound bug
+                    self.hit_fx.play()
+
+
+                if tubo.rect.left < self.Flappy.img_rect.left\
+                    and tubo.rect.right > self.Flappy.img_rect.right\
+                    and self.passed == False\
+                    and tubo.passed == False:
+
+                    self.passed = True
+
+                if tubo.rect.right < self.Flappy.img_rect.left\
+                    and self.passed == True\
+                    and tubo.passed == False:
+                    tubo.passed = True
+                    self.score += 1
+                    self.passed = False
+                    self.point_fx.play()
+
+
             if self.Flappy.img_rect.colliderect(self.grd.img_rect):
                 self.playing = False
                 self.cur_menu.state = "menu"
                 self.cur_menu.run_display = True
+
+                self.death_fx.play()
                     
                 self.Flappy.reset()
                 self.pipe_group.empty()
+
+                self.score = 0
 
                 self.start = False
                 self.bird_hit = False

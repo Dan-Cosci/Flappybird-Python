@@ -10,6 +10,8 @@ class Pipe(pygame.sprite.Sprite):
 
         self.image = pygame.image.load("assets/images/pipe.png").convert_alpha()
 
+        self.passed = False
+
         # 0 = top, 1 = buttom
         if orientation == 0:
             self.image = pygame.transform.flip(self.image, False, True)
@@ -23,7 +25,7 @@ class Pipe(pygame.sprite.Sprite):
     
     def update(self):
         self.rect.x -= config.GROUND_SPD
-        if self.rect.x <= -100:
+        if self.rect.right <= 0:
             self.kill()
 
 
