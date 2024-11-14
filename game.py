@@ -1,9 +1,10 @@
 import pygame
 import random
+import time
 
 from objects import background, bird, ground, pipe
 from src import config, service
-from menu import MainMenu
+from menu import MainMenu, Restart_menu
 
 
 
@@ -14,7 +15,7 @@ class Game():
         # initializing pygame module
         pygame.init()
         pygame.mixer.pre_init()
-        pygame.mixer.init
+        pygame.mixer.init()
 
         # load display
         self.display = pygame.Surface((config.WIDTH, config.HEIGHT))
@@ -50,7 +51,9 @@ class Game():
         self.pipe_freq = 1200
 
         # menu
-        self.cur_menu = MainMenu(self)
+        self.start_menu = MainMenu(self)
+        self.restart_menu = Restart_menu(self)
+        self.cur_menu = self.start_menu
 
         # initialization score
         self.score = 0
@@ -120,9 +123,11 @@ class Game():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
                 self.cur_menu.run_display = False
+                self.restart_menu.run_display = False
 
             if self.cur_menu.state == "menu":
 
+                # start button and actions
                 if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
                     self.cur_menu.mouse_hover = True
                     self.cur_menu.start_hover = True
@@ -134,6 +139,7 @@ class Game():
                         self.start = False
                         self.cur_menu.run_display = False
 
+                # quit button and actions
                 elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
                     self.cur_menu.mouse_hover = True
                     self.cur_menu.quit_hover = True
@@ -148,11 +154,50 @@ class Game():
                     self.cur_menu.start_hover = False
                     self.cur_menu.quit_hover = False
             
+
             elif self.cur_menu.state == "game":
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.start = True
                     if not(self.bird_hit):
                         self.Flappy.flap()
+
+
+            elif self.cur_menu.state == "restart":
+                    
+                # restart button and actions
+                if self.cur_menu.restart_rect.collidepoint(self.cur_menu.mouse_pos):
+                    self.cur_menu.mouse_hover = True
+                    self.cur_menu.menu_hover = False
+                    self.cur_menu.restart_hover = True
+
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.cur_menu.run_display = False
+                        self.cur_menu = self.start_menu
+
+                        self.cur_menu.state = "game"
+                        self.playing = True
+                        self.start = False
+                        self.cur_menu.run_display = False
+
+                # menu button and actions
+                elif self.cur_menu.menu_rect.collidepoint(self.cur_menu.mouse_pos):
+                    self.cur_menu.mouse_hover = True
+                    self.cur_menu.menu_hover = True
+                    self.cur_menu.restart_hover = False
+                
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.cur_menu.run_display = False
+
+                        self.cur_menu = self.start_menu
+                        self.cur_menu.state = "menu"
+                        self.cur_menu.run_display = True
+
+
+                else:
+                    self.cur_menu.mouse_hover = False
+                    self.cur_menu.restart_hover = False
+                    self.cur_menu.menu_hover = False
+
 
         # what the check function does when the game state is = "game" 
         if self.cur_menu.state == "game":
@@ -183,11 +228,16 @@ class Game():
 
 
             if self.Flappy.img_rect.colliderect(self.grd.img_rect):
-                self.playing = False
-                self.cur_menu.state = "menu"
-                self.cur_menu.run_display = True
-
+              
                 self.death_fx.play()
+                                
+                self.playing = False
+
+                self.cur_menu.state = "menu"
+
+                self.restart_menu.run_display = True
+                self.cur_menu = self.restart_menu
+
                     
                 self.Flappy.reset()
                 self.pipe_group.empty()
