@@ -28,8 +28,8 @@ class Bird(pygame.sprite.Sprite):
         self.cooldown = 3
 
         # gravity requirements
-        self.g_index = 1
-        self.g_max = 15
+        self.g_index = config.BIRD_GRAV
+        self.g_max = config.BIRD_MAX_G
         self.gravity = 0
 
 
@@ -70,5 +70,5 @@ class Bird(pygame.sprite.Sprite):
 
     def flap(self):
         self.gravity = 0
-        self.gravity -= 12
+        self.gravity -= config.BIRD_JUMP
         self.game.flap_fx.play()

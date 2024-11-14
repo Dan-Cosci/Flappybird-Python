@@ -15,6 +15,9 @@ class Menu():
         self.game.grd.draw(self.game.display)
         self.mouse_pos = pygame.mouse.get_pos()
         
+        # for debugging
+        self.fps = service.draw_text(str(int(self.game.clock.get_fps())),20, 30, 30, self.game.display)
+        
         self.game.bg.update()
         self.game.grd.update()
 
@@ -23,6 +26,8 @@ class Menu():
         self.game.check_events()
         self.game.window.blit(self.game.display, (0,0))
         self.game.clock.tick(config.FPS)
+        
+        
         pygame.display.update()
 
 

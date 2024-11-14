@@ -29,6 +29,9 @@ class Game():
         self.death_fx = pygame.mixer.Sound("assets/sound/die.wav")
         self.hit_fx = pygame.mixer.Sound("assets/sound/hit.wav")
 
+        # sound play only once
+        self.sound_played = False
+
         # for the game to not start immediately
         self.start = False
         self.bird_hit = False
@@ -68,7 +71,7 @@ class Game():
         self.grd.draw(self.display)
 
         self.text = service.draw_text(str(self.score), 40, config.WIDTH / 2, config.HEIGHT / 8, self.display)
-
+        self.fps = service.draw_text(str(int(self.clock.get_fps())),20, 30, 30, self.display)
 
         self.window.blit(self.display, (0,0))
         pygame.display.update()
@@ -158,8 +161,9 @@ class Game():
                 if self.Flappy.img_rect.colliderect(tubo.rect):
                     self.bird_hit = True
                     
-                    # the sound bug
-                    self.hit_fx.play()
+                    if not self.sound_played:
+                        self.hit_fx.play()
+                        self.sound_played = True
 
 
                 if tubo.rect.left < self.Flappy.img_rect.left\
@@ -188,6 +192,7 @@ class Game():
                 self.Flappy.reset()
                 self.pipe_group.empty()
 
+                self.sound_played = False
                 self.score = 0
 
                 self.start = False
