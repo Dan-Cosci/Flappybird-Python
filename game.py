@@ -12,7 +12,7 @@ from menu import MainMenu, Restart_menu
 class Game():
     def __init__(self):
         
-        # initializing pygame module
+        # initializing pygame and mixer module
         pygame.init()
         pygame.mixer.pre_init()
         pygame.mixer.init()
