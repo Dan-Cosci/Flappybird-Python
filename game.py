@@ -138,6 +138,7 @@ class Game():
                         self.playing = True
                         self.start = False
                         self.cur_menu.run_display = False
+                        self.score = 0
 
                 # quit button and actions
                 elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
@@ -147,7 +148,8 @@ class Game():
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.running, self.playing = False, False
-                        self.cur_menu.run_display = False 
+                        self.cur_menu.run_display = False
+                        pygame.quit()
 
                 else:
                     self.cur_menu.mouse_hover = False
@@ -172,7 +174,11 @@ class Game():
 
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.cur_menu.run_display = False
+                        self.cur_menu.text_created = False
+                        self.score = 0
+                        
                         self.cur_menu = self.start_menu
+                        
 
                         self.cur_menu.state = "game"
                         self.playing = True
@@ -238,12 +244,13 @@ class Game():
                 self.restart_menu.run_display = True
                 self.cur_menu = self.restart_menu
 
+                self.cur_menu.text_quote = service.quote(self.score)
+
                     
                 self.Flappy.reset()
                 self.pipe_group.empty()
 
                 self.sound_played = False
-                self.score = 0
 
                 self.start = False
                 self.bird_hit = False

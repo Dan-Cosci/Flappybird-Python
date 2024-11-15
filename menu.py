@@ -96,6 +96,8 @@ class Restart_menu(Menu):
 
         self.mouse_hover = False
 
+        self.text_quote = ""
+
 
         # scoreboard base background
         self.image = pygame.image.load("assets/ui_elements/bg_score.png").convert_alpha()
@@ -130,9 +132,8 @@ class Restart_menu(Menu):
         while self.run_display:
             self.base_background()
 
-            self.game.display.blit(self.image, self.img_rect)
-            service.draw_text("Your Score", 50, config.WIDTH/2, config.HEIGHT/2 - 260,self.game.display)
-            
+            self.score()
+
             self.play_button()
 
             self.blit_screen()
@@ -149,6 +150,32 @@ class Restart_menu(Menu):
                     self.game.display.blit(self.menu_button2, self.menu_rect2)
                 if self.restart_hover:
                     self.game.display.blit(self.restart_button2, self.restart_rect2)
+    
+
+    def score(self):
+        self.game.display.blit(self.image, self.img_rect)
+
+        service.draw_text("Your Score", 
+                          30, 
+                          config.WIDTH / 2, config.HEIGHT / 2 - 190,
+                          self.game.display,
+                          (95, 43, 46))
+        
+        service.draw_text(str(self.game.score), 
+                          50, 
+                          config.WIDTH / 2, config.HEIGHT / 2 - 145, 
+                          self.game.display, 
+                          (95, 43, 46))
+        
+        
+        service.draw_quote(self.text_quote, 
+                          22, 
+                          config.WIDTH / 2, config.HEIGHT / 2 -130,
+                          self.game.display,
+                          (95, 43, 46))
+
+            
+
 
 
     def base_background(self):
