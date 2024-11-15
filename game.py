@@ -5,6 +5,7 @@ import time
 from objects import background, bird, ground, pipe
 from src import config, service
 from menu import MainMenu, Restart_menu
+import dlc
 
 
 
@@ -37,12 +38,13 @@ class Game():
         self.start = False
         self.bird_hit = False
 
+        # initializes the bird
+        self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3, self)
+        
         # initializes background and ground
         self.bg = background.Background(0, 0, 1.2)
         self.grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
 
-        # initializes the bird
-        self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3, self)
 
         # initializes the pipe
         self.pipe_group = pygame.sprite.Group()
@@ -50,10 +52,17 @@ class Game():
         self.last_pipe = pygame.time.get_ticks()
         self.pipe_freq = 1200
 
-        # menu
+        # menus
         self.start_menu = MainMenu(self)
         self.restart_menu = Restart_menu(self)
         self.cur_menu = self.start_menu
+
+        # DLC content
+        self.dlc = False
+
+        self.pipeybird = dlc.PipeyBird(self)
+        self.freebird = dlc.FreeBird(self)
+        self.dlc_play = self.pipeybird
 
         # initialization score
         self.score = 0
