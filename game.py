@@ -22,7 +22,7 @@ class Game():
         self.window = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("Flappybird")
-        pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
+        pygame.display.set_icon(pygame.image.load("assets/images/icon.png").convert_alpha())
 
         #load sounds
         self.flap_fx = pygame.mixer.Sound("assets/sound/flap.wav")
