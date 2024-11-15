@@ -1,4 +1,3 @@
 #  FLAPPYBIRD IN PYTHON
 
-So once again This my second semi-big project that I'm making practicing what I have learned thus far.
-Seeing the Rock-Paper-Scissors game that I made before really made me want to make  graphical game next.
+hello this is the dev branch where the latest bugs and crashes are made by the developer
