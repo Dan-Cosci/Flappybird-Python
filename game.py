@@ -175,6 +175,7 @@ class Game():
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.cur_menu.run_display = False
                         self.cur_menu.text_created = False
+                        self.cur_menu.new_score = False
                         self.score = 0
                         
                         self.cur_menu = self.start_menu
@@ -234,24 +235,37 @@ class Game():
 
 
             if self.Flappy.img_rect.colliderect(self.grd.img_rect):
-              
-                self.death_fx.play()
-                                
+                
+                # death flag
+                self.death_fx.play()       
                 self.playing = False
 
+                # reconfiguring the state of the main menu
                 self.cur_menu.state = "menu"
 
+                # changing and displaying the restart menu
                 self.restart_menu.run_display = True
                 self.cur_menu = self.restart_menu
 
-                self.cur_menu.text_quote = service.quote(self.score)
+                # checking if the score is new highscore
+                data = service.file_load(config.FILE_NAME)
+                highscore = data["score"]["highscore"]
 
-                    
+                if self.score > highscore:
+                    self.cur_menu.new_score = True
+                    data["score"]["highscore"] = self.score
+                
+                service.file_save(config.FILE_NAME, data)
+
+                # making quote for the restart screen screen
+                self.cur_menu.text_quote = service.quote(self.score, self.cur_menu.new_score)
+
+                # reseting game conditions
                 self.Flappy.reset()
                 self.pipe_group.empty()
+                self.start = False
+                self.bird_hit = False
 
                 self.sound_played = False
 
-                self.start = False
-                self.bird_hit = False
                     

@@ -9,3 +9,5 @@ BIRD_JUMP = 12
 BIRD_MAX_G = 15
 
 FPS = 60
+
+FILE_NAME = "src/data.json"

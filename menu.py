@@ -98,6 +98,8 @@ class Restart_menu(Menu):
 
         self.text_quote = ""
 
+        self.new_score = False
+
 
         # scoreboard base background
         self.image = pygame.image.load("assets/ui_elements/bg_score.png").convert_alpha()
@@ -155,24 +157,23 @@ class Restart_menu(Menu):
     def score(self):
         self.game.display.blit(self.image, self.img_rect)
 
-        service.draw_text("Your Score", 
-                          30, 
-                          config.WIDTH / 2, config.HEIGHT / 2 - 190,
-                          self.game.display,
-                          (95, 43, 46))
-        
+        # if new highscore
+        if self.new_score:
+            service.draw_text("NEW HIGHSCORE", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190, self.game.display, (95, 43, 46))
+        else:
+            service.draw_text("Your Score", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190,self.game.display, (95, 43, 46))
+            
         service.draw_text(str(self.game.score), 
-                          50, 
-                          config.WIDTH / 2, config.HEIGHT / 2 - 145, 
-                          self.game.display, 
-                          (95, 43, 46))
-        
-        
+                            50, 
+                            config.WIDTH / 2, config.HEIGHT / 2 - 145, 
+                            self.game.display, 
+                            (95, 43, 46))
+            
         service.draw_quote(self.text_quote, 
-                          22, 
-                          config.WIDTH / 2, config.HEIGHT / 2 -130,
-                          self.game.display,
-                          (95, 43, 46))
+                            22, 
+                            config.WIDTH / 2, config.HEIGHT / 2 -130,
+                            self.game.display,
+                            (95, 43, 46))
 
             
 
