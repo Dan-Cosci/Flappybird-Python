@@ -161,7 +161,9 @@ class Restart_menu(Menu):
         if self.new_score:
             service.draw_text("NEW HIGHSCORE", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190, self.game.display, (95, 43, 46))
         else:
-            service.draw_text("Your Score", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190,self.game.display, (95, 43, 46))
+            data = service.file_load(config.FILE_NAME)
+            service.draw_text("Your Score", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190, self.game.display, (95, 43, 46))
+            service.draw_text(str(f"Highscore: {data['score']['highscore']}"), 20, config.WIDTH / 2, config.HEIGHT / 2 - 15, self.game.display, (95, 43, 46))
             
         service.draw_text(str(self.game.score), 
                             50, 
