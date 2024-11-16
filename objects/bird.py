@@ -1,9 +1,11 @@
 import pygame
-from src import config
+
 
 class Bird(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale, game):
+    def __init__(self, x: int, y: int, scale: float, config: dict, game: object):
         pygame.sprite.Sprite.__init__(self)
+
+        self.config = config
 
         # game instance in the class
         self.game = game
@@ -28,8 +30,8 @@ class Bird(pygame.sprite.Sprite):
         self.cooldown = 3
 
         # gravity requirements
-        self.g_index = config.BIRD_GRAV
-        self.g_max = config.BIRD_MAX_G
+        self.g_index = self.config["BIRD_GRAV"]
+        self.g_max = self.config["BIRD_MAX_G"]
         self.gravity = 0
 
 
@@ -70,27 +72,37 @@ class Bird(pygame.sprite.Sprite):
 
     def flap(self):
         self.gravity = 0
-        self.gravity -= config.BIRD_JUMP
+        self.gravity -= self.config["BIRD_JUMP"]
         self.game.flap_fx.play()
 
 
+
 class DLC_Bird(pygame.sprite.Sprite):
-    def __init__(self,x,y, scale):
+    def __init__(self, x: int, y: int, scale: int, config: dict):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load("assets/images/pipe.png").convert_alpha()
-
         self.passed = False
+        self.config = config
 
-        self.image = pygame.transform.scale_by(self.image, scale)
-        self.rect = self.image.get_rect(topleft = (x,y))
+        self.imgs =  [
+            pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird1.png').convert_alpha(), scale),
+            pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird2.png').convert_alpha(), scale),
+            pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird3.png').convert_alpha(), scale)
+        ]
+
+        self.index = 0
+        self.ani_helper = 1 
+
+        self.image = self.imgs[self.index]
+        self.rect = self.image.get_rect(center = (x,y))
 
     
     def update(self):
-        self.rect.x -= config.GROUND_SPD
+        self.rect.x -= self.config["GROUND_SPD"]
         if self.rect.right <= 0:
             self.kill()
 
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
+        

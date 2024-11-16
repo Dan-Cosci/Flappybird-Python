@@ -18,6 +18,7 @@ class Game():
 
 
         self.pipe_config = self.config["pipe_config"]
+        self.bird_config = self.config["bird_config"]
         self.config = self.config["config"]
 
         # initializing pygame and mixer module
@@ -46,7 +47,7 @@ class Game():
         self.bird_hit = False
 
         # initializes the bird
-        self.Flappy = bird.Bird(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.3, self)
+        self.Flappy = bird.Bird(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.3, self.bird_config, self)
         
         # initializes background and ground
         self.orig_bg = background.Background(0, 0, 1.2, self.config)
