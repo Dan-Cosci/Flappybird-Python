@@ -63,8 +63,8 @@ class Game():
         self.dlc_bird_group = pygame.sprite.Group()
 
         self.dlc_pipe_group = pygame.sprite.Group()
-        self.dlc_btm_p = pipe.DLC_pipe(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.1, self.pipe_config, self)
-        self.dlc_top_p = pipe.DLC_pipe(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.1, self.pipe_config, self, True)
+        self.dlc_btm_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2- self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.1, self.pipe_config, self)
+        self.dlc_top_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 + self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.1, self.pipe_config, self, True)
         self.dlc_pipe_group.add(self.dlc_btm_p)
         self.dlc_pipe_group.add(self.dlc_top_p)
 

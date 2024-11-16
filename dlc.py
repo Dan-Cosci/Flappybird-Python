@@ -8,10 +8,11 @@ from menu import MainMenu, Restart_menu
 
 
 class DLC():
-    def __init__(self,  game):
+    def __init__(self, game: object):
         self.game = game
 
         self.run_dlc = False
+
 
     def base_background(self):
         self.game.display.fill('black')
@@ -71,18 +72,19 @@ class PipeyBird(DLC):
 
     def game_logic(self):
         
+        bird_height = random.randint(125, 500)
+
         if len(self.game.dlc_bird_group) == 0:
 
-            self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], self.game.config["HEIGHT"]/2, 1.3, self.game.config)
+            self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], bird_height, 1.3, self.game.config)
             self.game.dlc_bird_group.add(self.dlc_bird)
 
         elif len(self.game.dlc_bird_group) > 0:
             for birds in self.game.dlc_bird_group:
                 if birds.rect.right < 100:
                     if len(self.game.dlc_bird_group) < 2:
-                        self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], self.game.config["HEIGHT"]/2, 1.3, self.game.config)
+                        self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], bird_height, 1.3, self.game.config)
                         self.game.dlc_bird_group.add(self.dlc_bird)
-
 
 
 class FreeBird(DLC):
