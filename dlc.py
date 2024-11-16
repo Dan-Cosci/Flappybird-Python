@@ -16,10 +16,21 @@ class DLC():
 class PipeyBird(DLC):
     def __init__(self, game):
         DLC.__init__(self, game)   
-        pass   
+
+    def run_display(self):
+        pass
+        
+    def game_logic(self):
+        pass
 
 
 class FreeBird(DLC):
     def __init__(self, game):
         DLC.__init__(self, game)   
-        pass   
+        pass
+
+    def run_display(self):
+        pass
+        
+    def game_logic(self):
+        pass
