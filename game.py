@@ -5,7 +5,7 @@ import time
 from objects import background, bird, ground, pipe
 from src import service
 from menu import MainMenu, Restart_menu
-import dlc
+from dlc import PipeyBird, FreeBird
 
 
 
@@ -52,6 +52,21 @@ class Game():
         # initializes background and ground
         self.orig_bg = background.Background(0, 0, 1.2, self.config)
         self.orig_grd = ground.Ground(0, (self.config["HEIGHT"] - (self.config["HEIGHT"] // 6)), 1.2, self.config)
+        
+        # DLC content
+        self.dlc = False
+
+        self.pipeybird = PipeyBird(self)
+        self.freebird = FreeBird(self)
+        self.dlc_play = self.pipeybird
+
+        self.dlc_bird_group = pygame.sprite.Group()
+
+        self.dlc_pipe_group = pygame.sprite.Group()
+        self.dlc_btm_p = pipe.DLC_pipe(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.1, self.pipe_config, self)
+        self.dlc_top_p = pipe.DLC_pipe(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.1, self.pipe_config, self, True)
+        self.dlc_pipe_group.add(self.dlc_btm_p)
+        self.dlc_pipe_group.add(self.dlc_top_p)
 
         self.dlc_bg = background.DLC_Background(0, 0, 1.4, self.config)
         self.dlc_grd = ground.DLC_Ground(0, (self.config["HEIGHT"] - (self.config["HEIGHT"] // 6)), 1.2, self.config)
@@ -73,12 +88,6 @@ class Game():
         self.restart_menu = Restart_menu(self)
         self.cur_menu = self.start_menu
 
-        # DLC content
-        self.dlc = False
-
-        self.pipeybird = dlc.PipeyBird(self)
-        self.freebird = dlc.FreeBird(self)
-        self.dlc_play = self.pipeybird
 
         # initialization score
         self.score = 0
@@ -151,7 +160,6 @@ class Game():
                         self.pipe_group.add(self.top_pipe)
 
 
-
     def check_events(self):
 
         # for loop for pygame events only
@@ -160,6 +168,9 @@ class Game():
                 self.running, self.playing = False, False
                 self.cur_menu.run_display = False
                 self.restart_menu.run_display = False
+                self.pipeybird.run_dlc = False
+                self.freebird.run_dlc = False
+                pygame.quit()
             
             # regular controls
             if not self.dlc:
@@ -192,7 +203,6 @@ class Game():
                             self.bg = self.dlc_bg
                             self.grd = self.dlc_grd
                             self.dlc = True
-                            print("dlc underway!!")
 
                     # quit button and actions
                     elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
@@ -276,8 +286,8 @@ class Game():
                         self.cur_menu.vanilla_hover = False
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
-                            self.cur_menu.state = "game"
-                            self.playing = True
+                            self.cur_menu.state = "pipeybird"
+                            self.dlc_play.run_dlc = True
                             self.start = False
                             self.cur_menu.run_display = False
                             self.score = 0
@@ -317,12 +327,10 @@ class Game():
                 
 
                 # game controls
-                elif self.cur_menu.state == "game":
+                elif self.cur_menu.state == "pipeybird":
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.start = True
-                        if not(self.bird_hit):
-                            self.Flappy.flap()
-
+                        self.dlc_btm_p.pipe_jump()
+                        self.dlc_top_p.pipe_jump()
 
                 # restart menu controls
                 elif self.cur_menu.state == "restart":
@@ -334,18 +342,7 @@ class Game():
                         self.cur_menu.restart_hover = True
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
-                            self.cur_menu.run_display = False
-                            self.cur_menu.text_created = False
-                            self.cur_menu.new_score = False
-                            self.score = 0
-                            
-                            self.cur_menu = self.start_menu
-                            
-
-                            self.cur_menu.state = "game"
-                            self.playing = True
-                            self.start = False
-                            self.cur_menu.run_display = False
+                            print("working progress")
 
                     # menu button and actions
                     elif self.cur_menu.menu_rect.collidepoint(self.cur_menu.mouse_pos):
@@ -367,7 +364,7 @@ class Game():
                         self.cur_menu.menu_hover = False
 
 
-        # what the check function does when the game state is = "game" 
+        # event cheking for all the states
         if self.cur_menu.state == "game":
 
             for tubo in self.pipe_group:
@@ -431,5 +428,6 @@ class Game():
                 self.bird_hit = False
 
                 self.sound_played = False
+
 
                     

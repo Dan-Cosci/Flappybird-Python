@@ -85,19 +85,33 @@ class DLC_Bird(pygame.sprite.Sprite):
         self.config = config
 
         self.imgs =  [
-            pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird1.png').convert_alpha(), scale),
-            pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird2.png').convert_alpha(), scale),
-            pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird3.png').convert_alpha(), scale)
+            pygame.transform.flip(pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird1.png').convert_alpha(), scale), True, False),
+            pygame.transform.flip(pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird2.png').convert_alpha(), scale), True, False),
+            pygame.transform.flip(pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird3.png').convert_alpha(), scale), True, False)
         ]
 
         self.index = 0
         self.ani_helper = 1 
+
+        self.counter = 0
+        self.cooldown = 3
 
         self.image = self.imgs[self.index]
         self.rect = self.image.get_rect(center = (x,y))
 
     
     def update(self):
+        self.counter += 1
+
+        if self.counter > self.cooldown:
+            self.counter = 0
+            self.index += self.ani_helper
+
+            if self.index >= len(self.imgs) - 1 or self.index <= 0:
+                self.ani_helper *= -1
+        
+        self.image = self.imgs[self.index]
+        
         self.rect.x -= self.config["GROUND_SPD"]
         if self.rect.right <= 0:
             self.kill()

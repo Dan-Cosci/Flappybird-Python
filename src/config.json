@@ -20,8 +20,12 @@
             "easy" : 200,
             "medium" : 175,
             "hard" : 150
+        },
+        "dlc_pipe" : {
+            "PIPE_GRAV": 1.2,
+            "PIPE_JUMP": 15,
+            "PIPE_MAX_G": 15
         }
-
     },
     "bird_config" : {
         "BIRD_GRAV": 1.2,
