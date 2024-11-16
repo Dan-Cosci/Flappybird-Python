@@ -3,7 +3,7 @@ import random
 import time
 
 from objects import background, bird, ground, pipe
-from src import config, service
+from src import service
 from menu import MainMenu, Restart_menu
 import dlc
 
@@ -13,14 +13,18 @@ import dlc
 class Game():
     def __init__(self):
         
+        # initializing the config
+        self.config = service.file_load("src/config.json")
+        self.config = self.config["config"]
+
         # initializing pygame and mixer module
         pygame.init()
         pygame.mixer.pre_init()
         pygame.mixer.init()
 
         # load display
-        self.display = pygame.Surface((config.WIDTH, config.HEIGHT))
-        self.window = pygame.display.set_mode((config.WIDTH, config.HEIGHT))
+        self.display = pygame.Surface((self.config["WIDTH"], self.config["HEIGHT"]))
+        self.window = pygame.display.set_mode((self.config["WIDTH"], self.config["HEIGHT"]))
         self.clock = pygame.time.Clock()
         pygame.display.set_caption("Flappybird")
         pygame.display.set_icon(pygame.image.load("assets/images/bird2.png").convert_alpha())
@@ -39,14 +43,14 @@ class Game():
         self.bird_hit = False
 
         # initializes the bird
-        self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3, self)
+        self.Flappy = bird.Bird(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.3, self)
         
         # initializes background and ground
-        self.orig_bg = background.Background(0, 0, 1.2)
-        self.orig_grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
+        self.orig_bg = background.Background(0, 0, 1.2, self.config)
+        self.orig_grd = ground.Ground(0, (self.config["HEIGHT"] - (self.config["HEIGHT"] // 6)), 1.2, self.config)
 
-        self.dlc_bg = background.DLC_Background(0, 0, 1.4)
-        self.dlc_grd = ground.DLC_Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
+        self.dlc_bg = background.DLC_Background(0, 0, 1.4, self.config)
+        self.dlc_grd = ground.DLC_Ground(0, (self.config["HEIGHT"] - (self.config["HEIGHT"] // 6)), 1.2, self.config)
 
         # sets the background to the default one
         self.bg = self.orig_bg
@@ -88,7 +92,7 @@ class Game():
         self.Flappy.draw(self.display)
         self.grd.draw(self.display)
 
-        self.text = service.draw_text(str(self.score), 40, config.WIDTH / 2, config.HEIGHT / 8, self.display)
+        self.text = service.draw_text(str(self.score), 40, self.config["WIDTH"] / 2, self.config["HEIGHT"] / 8, self.display)
         self.fps = service.draw_text(str(int(self.clock.get_fps())),20, 30, 30, self.display)
 
         self.window.blit(self.display, (0,0))
@@ -114,7 +118,7 @@ class Game():
                 self.update()
                 self.pipe_gen()
 
-            self.clock.tick(config.FPS)
+            self.clock.tick(self.config["FPS"])
 
 
     def pipe_gen(self):
@@ -123,8 +127,8 @@ class Game():
         if timenow - self.last_pipe > self.pipe_freq:
             pipe_height = random.randint(150, 500)
 
-            self.top_pipe = pipe.Pipe(config.WIDTH, pipe_height - self.pipe_gap / 2, 1, 0)
-            self.btm_pipe = pipe.Pipe(config.WIDTH, pipe_height + self.pipe_gap / 2, 1, 1)
+            self.top_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height - self.pipe_gap / 2, 1, self.config)
+            self.btm_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height + self.pipe_gap / 2, 1, self.config, True)
 
             self.pipe_group.add(self.btm_pipe)
             self.pipe_group.add(self.top_pipe)
@@ -388,14 +392,14 @@ class Game():
                 self.cur_menu = self.restart_menu
 
                 # checking if the score is new highscore
-                data = service.file_load(config.FILE_NAME)
+                data = service.file_load(self.config["FILE_NAME"])
                 highscore = data["score"]["highscore"]
 
                 if self.score > highscore:
                     self.cur_menu.new_score = True
                     data["score"]["highscore"] = self.score
                 
-                service.file_save(config.FILE_NAME, data)
+                service.file_save(self.config["FILE_NAME"], data)
 
                 # making quote for the restart screen screen
                 self.cur_menu.text_quote = service.quote(self.score, self.cur_menu.new_score)

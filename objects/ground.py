@@ -1,12 +1,12 @@
 import pygame
 import math
-from src import config
-
 
 
 class Ground(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale):
+    def __init__(self, x: int, y: int, scale: int, config: dict):
         pygame.sprite.Sprite.__init__(self)
+
+        self.config = config
 
         self.img = pygame.image.load('assets/images/ground.png').convert_alpha()
         self.img = pygame.transform.scale_by(self.img, scale)
@@ -18,7 +18,7 @@ class Ground(pygame.sprite.Sprite):
 
     def draw(self, screen):
 
-        panel = math.ceil(config.WIDTH/ self.bg_width) + 2
+        panel = math.ceil(self.config["WIDTH"]/ self.bg_width) + 2
 
         for i in range(panel):
             # self.img_rect.x  
@@ -27,15 +27,17 @@ class Ground(pygame.sprite.Sprite):
 
 
     def update(self):
-        self.scroll -= config.GROUND_SPD
+        self.scroll -= self.config["GROUND_SPD"]
         # self.img_rect.x = self.scroll
         if abs(self.scroll)> self.bg_width:
             self.scroll = 0
 
 
 class DLC_Ground(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale):
+    def __init__(self, x: int, y: int, scale: int, config: dict):
         pygame.sprite.Sprite.__init__(self)
+
+        self.config = config
 
         self.img = pygame.image.load('assets/images/DLC_ground.png').convert_alpha()
         self.img = pygame.transform.scale_by(self.img, scale)
@@ -47,7 +49,7 @@ class DLC_Ground(pygame.sprite.Sprite):
 
     def draw(self, screen):
 
-        panel = math.ceil(config.WIDTH/ self.bg_width) + 2
+        panel = math.ceil(self.config["WIDTH"]/ self.bg_width) + 2
 
         for i in range(panel):
             # self.img_rect.x  
@@ -56,7 +58,7 @@ class DLC_Ground(pygame.sprite.Sprite):
 
 
     def update(self):
-        self.scroll -= config.GROUND_SPD
+        self.scroll -= self.config["GROUND_SPD"]
         # self.img_rect.x = self.scroll
         if abs(self.scroll)> self.bg_width:
             self.scroll = 0

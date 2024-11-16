@@ -33,7 +33,7 @@ def file_load(file) -> dict:
 
 def file_save(file, data: dict) -> None:
     with open(file, 'w') as file:
-        json.dump(data, file, indent = 8)
+        json.dump(data, file, indent = 4)
 
 
 def draw_quote(text: str, size: int, x: int, y: int, display: pygame.display, color=(255,255,255)) -> None:

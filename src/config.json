@@ -1,0 +1,17 @@
+{
+    "config": {
+        "WIDTH": 405,
+        "HEIGHT": 720,
+
+        "GROUND_SPD": 5,
+        "BG_SPD": 1,
+
+        "BIRD_GRAV": 1,
+        "BIRD_JUMP": 12,
+        "BIRD_MAX_G": 15,
+
+        "FPS": 60,
+        
+        "FILE_NAME": "src/data.json"
+    }
+}
