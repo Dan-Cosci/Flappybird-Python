@@ -42,9 +42,15 @@ class Game():
         self.Flappy = bird.Bird(config.WIDTH / 2, config.HEIGHT / 2, 1.3, self)
         
         # initializes background and ground
-        self.bg = background.Background(0, 0, 1.2)
-        self.grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
+        self.orig_bg = background.Background(0, 0, 1.2)
+        self.orig_grd = ground.Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
 
+        self.dlc_bg = background.DLC_Background(0, 0, 1.4)
+        self.dlc_grd = ground.DLC_Ground(0, (config.HEIGHT - (config.HEIGHT // 6)), 1.2)
+
+        # sets the background to the default one
+        self.bg = self.orig_bg
+        self.grd = self.orig_grd
 
         # initializes the pipe
         self.pipe_group = pygame.sprite.Group()
@@ -133,86 +139,211 @@ class Game():
                 self.running, self.playing = False, False
                 self.cur_menu.run_display = False
                 self.restart_menu.run_display = False
-
-            if self.cur_menu.state == "menu":
-
-                # start button and actions
-                if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
-                    self.cur_menu.mouse_hover = True
-                    self.cur_menu.start_hover = True
-                    self.cur_menu.quit_hover = False
-
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.cur_menu.state = "game"
-                        self.playing = True
-                        self.start = False
-                        self.cur_menu.run_display = False
-                        self.score = 0
-
-                # quit button and actions
-                elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
-                    self.cur_menu.mouse_hover = True
-                    self.cur_menu.quit_hover = True
-                    self.cur_menu.start_hover = False
-
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.running, self.playing = False, False
-                        self.cur_menu.run_display = False
-                        pygame.quit()
-
-                else:
-                    self.cur_menu.mouse_hover = False
-                    self.cur_menu.start_hover = False
-                    self.cur_menu.quit_hover = False
             
+            # regular controls
+            if not self.dlc:
+                if self.cur_menu.state == "menu":
 
-            elif self.cur_menu.state == "game":
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.start = True
-                    if not(self.bird_hit):
-                        self.Flappy.flap()
+                    # start button and actions
+                    if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.start_hover = True
 
+                        self.cur_menu.quit_hover = False
+                        self.cur_menu.dlc_hover = False
 
-            elif self.cur_menu.state == "restart":
-                    
-                # restart button and actions
-                if self.cur_menu.restart_rect.collidepoint(self.cur_menu.mouse_pos):
-                    self.cur_menu.mouse_hover = True
-                    self.cur_menu.menu_hover = False
-                    self.cur_menu.restart_hover = True
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.cur_menu.state = "game"
+                            self.playing = True
+                            self.start = False
+                            self.cur_menu.run_display = False
+                            self.score = 0
 
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.cur_menu.run_display = False
-                        self.cur_menu.text_created = False
-                        self.cur_menu.new_score = False
-                        self.score = 0
+                    # dlc button and actions
+                    elif self.cur_menu.dlc_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.dlc_hover = True
                         
-                        self.cur_menu = self.start_menu
-                        
+                        self.cur_menu.quit_hover = False
+                        self.cur_menu.start_hover = False
 
-                        self.cur_menu.state = "game"
-                        self.playing = True
-                        self.start = False
-                        self.cur_menu.run_display = False
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.bg = self.dlc_bg
+                            self.grd = self.dlc_grd
+                            self.dlc = True
+                            print("dlc underway!!")
 
-                # menu button and actions
-                elif self.cur_menu.menu_rect.collidepoint(self.cur_menu.mouse_pos):
-                    self.cur_menu.mouse_hover = True
-                    self.cur_menu.menu_hover = True
-                    self.cur_menu.restart_hover = False
+                    # quit button and actions
+                    elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.quit_hover = True
+
+                        self.cur_menu.start_hover = False
+                        self.cur_menu.dlc_hover = False
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.running, self.playing = False, False
+                            self.cur_menu.run_display = False
+                            pygame.quit()
+
+                    else:
+                        self.cur_menu.mouse_hover = False
+                        self.cur_menu.vanilla_hover = False
+                        self.cur_menu.start_hover = False
+                        self.cur_menu.quit_hover = False
+                        self.cur_menu.dlc_hover = False
                 
+
+                elif self.cur_menu.state == "game":
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.cur_menu.run_display = False
-
-                        self.cur_menu = self.start_menu
-                        self.cur_menu.state = "menu"
-                        self.cur_menu.run_display = True
+                        self.start = True
+                        if not(self.bird_hit):
+                            self.Flappy.flap()
 
 
-                else:
-                    self.cur_menu.mouse_hover = False
-                    self.cur_menu.restart_hover = False
-                    self.cur_menu.menu_hover = False
+                elif self.cur_menu.state == "restart":
+                        
+                    # restart button and actions
+                    if self.cur_menu.restart_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.menu_hover = False
+                        self.cur_menu.restart_hover = True
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.cur_menu.run_display = False
+                            self.cur_menu.text_created = False
+                            self.cur_menu.new_score = False
+                            self.score = 0
+                            
+                            self.cur_menu = self.start_menu
+                            
+
+                            self.cur_menu.state = "game"
+                            self.playing = True
+                            self.start = False
+                            self.cur_menu.run_display = False
+
+                    # menu button and actions
+                    elif self.cur_menu.menu_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.menu_hover = True
+                        self.cur_menu.restart_hover = False
+                    
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.cur_menu.run_display = False
+
+                            self.cur_menu = self.start_menu
+                            self.cur_menu.state = "menu"
+                            self.cur_menu.run_display = True
+
+
+                    else:
+                        self.cur_menu.mouse_hover = False
+                        self.cur_menu.restart_hover = False
+                        self.cur_menu.menu_hover = False
+
+            # DLC controls
+            else:
+                if self.cur_menu.state == "menu":
+
+                    # start button and actions
+                    if self.cur_menu.start_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.start_hover = True
+
+                        self.cur_menu.quit_hover = False
+                        self.cur_menu.vanilla_hover = False
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.cur_menu.state = "game"
+                            self.playing = True
+                            self.start = False
+                            self.cur_menu.run_display = False
+                            self.score = 0
+
+                    # dlc button and actions
+                    elif self.cur_menu.vanilla_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.vanilla_hover = True
+                        
+                        self.cur_menu.quit_hover = False
+                        self.cur_menu.start_hover = False
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.bg = self.orig_bg
+                            self.grd = self.orig_grd
+                            self.dlc = False
+
+                    # quit button and actions
+                    elif self.cur_menu.quit_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.quit_hover = True
+
+                        self.cur_menu.start_hover = False
+                        self.cur_menu.vanilla_hover = False
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.running, self.playing = False, False
+                            self.cur_menu.run_display = False
+                            pygame.quit()
+
+                    else:
+                        self.cur_menu.mouse_hover = False
+                        self.cur_menu.dlc_hover = False
+                        self.cur_menu.start_hover = False
+                        self.cur_menu.quit_hover = False
+                        self.cur_menu.vanilla_hover = False
+                
+
+                # game controls
+                elif self.cur_menu.state == "game":
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.start = True
+                        if not(self.bird_hit):
+                            self.Flappy.flap()
+
+
+                # restart menu controls
+                elif self.cur_menu.state == "restart":
+                        
+                    # restart button and actions
+                    if self.cur_menu.restart_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.menu_hover = False
+                        self.cur_menu.restart_hover = True
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.cur_menu.run_display = False
+                            self.cur_menu.text_created = False
+                            self.cur_menu.new_score = False
+                            self.score = 0
+                            
+                            self.cur_menu = self.start_menu
+                            
+
+                            self.cur_menu.state = "game"
+                            self.playing = True
+                            self.start = False
+                            self.cur_menu.run_display = False
+
+                    # menu button and actions
+                    elif self.cur_menu.menu_rect.collidepoint(self.cur_menu.mouse_pos):
+                        self.cur_menu.mouse_hover = True
+                        self.cur_menu.menu_hover = True
+                        self.cur_menu.restart_hover = False
+                    
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.cur_menu.run_display = False
+
+                            self.cur_menu = self.start_menu
+                            self.cur_menu.state = "menu"
+                            self.cur_menu.run_display = True
+
+
+                    else:
+                        self.cur_menu.mouse_hover = False
+                        self.cur_menu.restart_hover = False
+                        self.cur_menu.menu_hover = False
 
 
         # what the check function does when the game state is = "game" 
