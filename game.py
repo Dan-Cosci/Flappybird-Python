@@ -15,6 +15,9 @@ class Game():
         
         # initializing the config
         self.config = service.file_load("src/config.json")
+
+
+        self.pipe_config = self.config["pipe_config"]
         self.config = self.config["config"]
 
         # initializing pygame and mixer module
@@ -58,9 +61,11 @@ class Game():
 
         # initializes the pipe
         self.pipe_group = pygame.sprite.Group()
-        self.pipe_gap = 200
-        self.last_pipe = pygame.time.get_ticks()
-        self.pipe_freq = 1200
+
+        self.diff = ["easy", "medium", "hard"]
+        self.diff_index = 0
+        self.pipe_gap = self.pipe_config["pipe_gap"]
+        self.pipe_freq = self.pipe_config["pipe_frequency"]
 
         # menus
         self.start_menu = MainMenu(self)
@@ -123,16 +128,27 @@ class Game():
 
     def pipe_gen(self):
         
-        timenow = pygame.time.get_ticks()
-        if timenow - self.last_pipe > self.pipe_freq:
-            pipe_height = random.randint(150, 500)
+        pipe_height = random.randint(150, 500)
+        if self.score > 15:
+            self.diff_index = 1
+        if self.score > 25:
+            self.diff_index = 2
 
-            self.top_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height - self.pipe_gap / 2, 1, self.config)
-            self.btm_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height + self.pipe_gap / 2, 1, self.config, True)
-
+        if len(self.pipe_group) == 0:
+            self.top_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height - self.pipe_gap[self.diff[self.diff_index]] / 2, 1, self.config)
+            self.btm_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height + self.pipe_gap[self.diff[self.diff_index]] / 2, 1, self.config, True)
             self.pipe_group.add(self.btm_pipe)
             self.pipe_group.add(self.top_pipe)
-            self.last_pipe = timenow
+
+        elif len(self.pipe_group) > 0:
+            for pipes in self.pipe_group:
+                if pipes.rect.right < self.pipe_freq[self.diff[self.diff_index]]:
+                    if len(self.pipe_group) < 3:    
+                        self.top_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height - self.pipe_gap[self.diff[self.diff_index]] / 2, 1, self.config)
+                        self.btm_pipe = pipe.Pipe(self.config["WIDTH"], pipe_height + self.pipe_gap[self.diff[self.diff_index]] / 2, 1, self.config, True)
+                        self.pipe_group.add(self.btm_pipe)
+                        self.pipe_group.add(self.top_pipe)
+
 
 
     def check_events(self):
@@ -407,6 +423,9 @@ class Game():
                 # reseting game conditions
                 self.Flappy.reset()
                 self.pipe_group.empty()
+
+                self.diff_index = 0
+
                 self.start = False
                 self.bird_hit = False
 

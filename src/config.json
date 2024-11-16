@@ -6,12 +6,25 @@
         "GROUND_SPD": 5,
         "BG_SPD": 1,
 
-        "BIRD_GRAV": 1,
+        "BIRD_GRAV": 1.2,
         "BIRD_JUMP": 12,
         "BIRD_MAX_G": 15,
 
         "FPS": 60,
         
         "FILE_NAME": "src/data.json"
+    },
+    "pipe_config": {
+        "pipe_frequency" : {
+            "easy" : 100,
+            "medium" : 150,
+            "hard" : 200
+        },
+        "pipe_gap" : {
+            "easy" : 200,
+            "medium" : 175,
+            "hard" : 150
+        }
+
     }
 }
