@@ -38,6 +38,7 @@ class Game():
         self.point_fx = pygame.mixer.Sound("assets/sound/point.wav")
         self.death_fx = pygame.mixer.Sound("assets/sound/die.wav")
         self.hit_fx = pygame.mixer.Sound("assets/sound/hit.wav")
+        self.swoosh_fx = pygame.mixer.Sound("assets/sound/swooshing.wav")
 
         # sound play only once
         self.sound_played = False
@@ -63,8 +64,8 @@ class Game():
         self.dlc_bird_group = pygame.sprite.Group()
 
         self.dlc_pipe_group = pygame.sprite.Group()
-        self.dlc_btm_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2- self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.1, self.pipe_config, self)
-        self.dlc_top_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 + self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.1, self.pipe_config, self, True)
+        self.dlc_btm_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 - self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.2, self.pipe_config, self)
+        self.dlc_top_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 + self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.2, self.pipe_config, self, True)
         self.dlc_pipe_group.add(self.dlc_btm_p)
         self.dlc_pipe_group.add(self.dlc_top_p)
 
@@ -185,6 +186,8 @@ class Game():
                         self.cur_menu.dlc_hover = False
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+                            
                             self.cur_menu.state = "game"
                             self.playing = True
                             self.start = False
@@ -200,6 +203,8 @@ class Game():
                         self.cur_menu.start_hover = False
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+
                             self.bg = self.dlc_bg
                             self.grd = self.dlc_grd
                             self.dlc = True
@@ -213,6 +218,8 @@ class Game():
                         self.cur_menu.dlc_hover = False
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+                            
                             self.running, self.playing = False, False
                             self.cur_menu.run_display = False
                             pygame.quit()
@@ -241,6 +248,8 @@ class Game():
                         self.cur_menu.restart_hover = True
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+                            
                             self.cur_menu.run_display = False
                             self.cur_menu.text_created = False
                             self.cur_menu.new_score = False
@@ -261,6 +270,8 @@ class Game():
                         self.cur_menu.restart_hover = False
                     
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+                            
                             self.cur_menu.run_display = False
 
                             self.cur_menu = self.start_menu
@@ -275,6 +286,7 @@ class Game():
 
             # DLC controls
             else:
+
                 if self.cur_menu.state == "menu":
 
                     # start button and actions
@@ -286,6 +298,8 @@ class Game():
                         self.cur_menu.vanilla_hover = False
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+
                             self.cur_menu.state = "pipeybird"
                             self.dlc_play.run_dlc = True
                             self.start = False
@@ -301,6 +315,8 @@ class Game():
                         self.cur_menu.start_hover = False
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+
                             self.bg = self.orig_bg
                             self.grd = self.orig_grd
                             self.dlc = False
@@ -314,6 +330,8 @@ class Game():
                         self.cur_menu.vanilla_hover = False
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+
                             self.running, self.playing = False, False
                             self.cur_menu.run_display = False
                             pygame.quit()
@@ -331,6 +349,7 @@ class Game():
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         self.dlc_btm_p.pipe_jump()
                         self.dlc_top_p.pipe_jump()
+                        self.flap_fx.play()
 
                 # restart menu controls
                 elif self.cur_menu.state == "restart":
@@ -342,7 +361,7 @@ class Game():
                         self.cur_menu.restart_hover = True
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
-                            print("working progress")
+                            self.swoosh_fx.play()
 
                     # menu button and actions
                     elif self.cur_menu.menu_rect.collidepoint(self.cur_menu.mouse_pos):
@@ -351,6 +370,8 @@ class Game():
                         self.cur_menu.restart_hover = False
                     
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            self.swoosh_fx.play()
+                            
                             self.cur_menu.run_display = False
 
                             self.cur_menu = self.start_menu
@@ -428,6 +449,11 @@ class Game():
                 self.bird_hit = False
 
                 self.sound_played = False
+
+
+        elif self.cur_menu.state == "pipeybird":
+            if pygame.sprite.groupcollide(self.dlc_bird_group, self.dlc_pipe_group, False, False):
+                print("collide bithkjs")
 
 
                     
