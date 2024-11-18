@@ -1,9 +1,11 @@
 import pygame
-from src import config
+
 
 class Bird(pygame.sprite.Sprite):
-    def __init__(self, x, y, scale, game):
+    def __init__(self, x: int, y: int, scale: float, config: dict, game: object):
         pygame.sprite.Sprite.__init__(self)
+
+        self.config = config
 
         # game instance in the class
         self.game = game
@@ -28,8 +30,8 @@ class Bird(pygame.sprite.Sprite):
         self.cooldown = 3
 
         # gravity requirements
-        self.g_index = config.BIRD_GRAV
-        self.g_max = config.BIRD_MAX_G
+        self.g_index = self.config["BIRD_GRAV"]
+        self.g_max = self.config["BIRD_MAX_G"]
         self.gravity = 0
 
 
@@ -70,5 +72,51 @@ class Bird(pygame.sprite.Sprite):
 
     def flap(self):
         self.gravity = 0
-        self.gravity -= config.BIRD_JUMP
+        self.gravity -= self.config["BIRD_JUMP"]
         self.game.flap_fx.play()
+
+
+
+class DLC_Bird(pygame.sprite.Sprite):
+    def __init__(self, x: int, y: int, scale: int, config: dict):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.passed = False
+        self.config = config
+
+        self.imgs =  [
+            pygame.transform.flip(pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird1.png').convert_alpha(), scale), True, False),
+            pygame.transform.flip(pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird2.png').convert_alpha(), scale), True, False),
+            pygame.transform.flip(pygame.transform.scale_by(pygame.image.load('assets/images/DLC_bird3.png').convert_alpha(), scale), True, False)
+        ]
+
+        self.index = 0
+        self.ani_helper = 1 
+
+        self.counter = 0
+        self.cooldown = 3
+
+        self.image = self.imgs[self.index]
+        self.rect = self.image.get_rect(center = (x,y))
+
+    
+    def update(self):
+        self.counter += 1
+
+        if self.counter > self.cooldown:
+            self.counter = 0
+            self.index += self.ani_helper
+
+            if self.index >= len(self.imgs) - 1 or self.index <= 0:
+                self.ani_helper *= -1
+        
+        self.image = self.imgs[self.index]
+        
+        self.rect.x -= self.config["dlc_config"]["BIRD_SPD"]
+        if self.rect.right <= 0:
+            self.kill()
+
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
+        

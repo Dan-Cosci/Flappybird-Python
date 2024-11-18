@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
         "difficulty": {
                 "easy": {
                         "pipe_freq": 2500,
@@ -60,4 +61,43 @@
                         "Congrats! Now you can say\nyou are slightly less terrible!"
                 ]
         }
+=======
+    "score": {
+        "highscore": 0,
+        "DLC_1_High": 0,
+        "DLC_2_High": 0,
+        "lowscore_quotes": [
+            "Flapping through\nliFe aimlessly\njust like you",
+            "Flapping with all\nthe grace oF a\nbrick in water",
+            "That pipe did not move\nJust saying",
+            "This is the best\nyou will achieve\nall day",
+            "No one believes in you\nespecially this bird",
+            "A legend in\nyour own mind",
+            "Keep trying\nYou are only getting\nslightly less terrible",
+            "You're really out here\ntrying huh?",
+            "That was...\nwell...\nit was something",
+            "At this rate, even\na snail would lap you",
+            "This is deFinitely\nyour Finest\nattempt yet",
+            "You are almost there!\njust kidding\nnot even close",
+            "Did you even\ntry that time?",
+            "Wow, you are still\nplaying? That is some\ndetermination or denial",
+            "IF only eFFort\ncounted For anything",
+            "One day you will\nget it Today is\njust not that day"
+        ],
+        "highscore_quotes": [
+            "A new high score\nWell, miracles do happen!",
+            "Congratulations\nThis might actually be\nimpressive to someone!",
+            "A new record\nWe are all mildly\nunderwhelmed!",
+            "Well done\nJust goes to show\neven you can improve!",
+            "Finally! You have set\na new low standard\nfor excellence!",
+            "Record-breaking Now you\ncan finally brag",
+            "Your high score\nis as high as our\nexpectations were low!",
+            "Against all odds you\nsomehow did better!",
+            "High score\nLooks like practice\nsort of paid off!",
+            "You did it Maybe\nlay down and recover!",
+            "A personal best\nMaybe next time\nyou will be good at this!",
+            "Congrats! Now you can say\nyou are slightly less terrible!"
+        ]
+    }
+>>>>>>> dev
 }

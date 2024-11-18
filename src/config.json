@@ -1,0 +1,41 @@
+{
+    "config": {
+        "WIDTH": 405,
+        "HEIGHT": 720,
+
+        "GROUND_SPD": 5,
+        "BG_SPD": 1,
+
+        "fps_counter" : false, 
+        "FPS": 60,
+        
+        "FILE_NAME": "src/data.json"
+    },
+    "pipe_config": {
+        "pipe_frequency" : {
+            "easy" : 100,
+            "medium" : 150,
+            "hard" : 200
+        },
+        "pipe_gap" : {
+            "easy" : 200,
+            "medium" : 175,
+            "hard" : 150
+        },
+        "dlc_pipe" : {
+            "PIPE_GRAV": 0.8,
+            "PIPE_JUMP": 13,
+            "PIPE_MAX_G": 15,
+            "PIPE_GAP": 160
+        }
+    },
+    "bird_config" : {
+        "BIRD_GRAV": 1.2,
+        "BIRD_JUMP": 13,
+        "BIRD_MAX_G": 15,
+
+        "dlc_config": {
+            "BIRD_SPD": 5
+        }
+    }
+}
