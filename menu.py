@@ -16,7 +16,8 @@ class Menu():
         self.mouse_pos = pygame.mouse.get_pos()
         
         # for debugging
-        self.fps = service.draw_text(str(int(self.game.clock.get_fps())),20, 30, 30, self.game.display)
+        if self.game.fps_counter:
+            self.fps = service.draw_text(str(int(self.game.clock.get_fps())),20, 30, 30, self.game.display)
         
         self.game.bg.update()
         self.game.grd.update()
@@ -185,24 +186,38 @@ class Restart_menu(Menu):
         self.game.display.blit(self.image, self.img_rect)
 
         # if new highscore
-        if self.new_score:
+        if self.new_score and not self.game.dlc:
             service.draw_text("NEW HIGHSCORE", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190, self.game.display, (95, 43, 46))
-        else:
+        elif not self.game.dlc and not self.new_score:
             data = service.file_load(config.FILE_NAME)
             service.draw_text("Your Score", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190, self.game.display, (95, 43, 46))
             service.draw_text(str(f"Highscore: {data['score']['highscore']}"), 20, config.WIDTH / 2, config.HEIGHT / 2 - 15, self.game.display, (95, 43, 46))
+        elif self.game.dlc and not self.new_score:
+            data = service.file_load(config.FILE_NAME)
+            service.draw_text("Your Score", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190, self.game.display, (95, 43, 46))
+            service.draw_text(str(f"Highscore: {data['score']['DLC_1_High']}"), 20, config.WIDTH / 2, config.HEIGHT / 2 - 15, self.game.display, (95, 43, 46))
+        elif self.new_score and self.game.dlc:
+            service.draw_text("NEW HIGHSCORE", 30, config.WIDTH / 2, config.HEIGHT / 2 - 190, self.game.display, (95, 43, 46))
             
+
         service.draw_text(str(self.game.score), 
                             50, 
                             config.WIDTH / 2, config.HEIGHT / 2 - 145, 
                             self.game.display, 
                             (95, 43, 46))
-            
-        service.draw_quote(self.text_quote, 
-                            22, 
-                            config.WIDTH / 2, config.HEIGHT / 2 -130,
-                            self.game.display,
-                            (95, 43, 46))
+        
+        if not self.game.ceiling_glitch:
+            service.draw_quote(self.text_quote, 
+                                22, 
+                                config.WIDTH / 2, config.HEIGHT / 2 -130,
+                                self.game.display,
+                                (95, 43, 46))
+        else:
+            service.draw_quote("Do not even try\nto go there", 
+                                22, 
+                                config.WIDTH / 2, config.HEIGHT / 2 -130,
+                                self.game.display,
+                                (95, 43, 46))
 
             
 
@@ -215,5 +230,6 @@ class Restart_menu(Menu):
         self.mouse_pos = pygame.mouse.get_pos()
         
         # for debugging
-        self.fps = service.draw_text(str(int(self.game.clock.get_fps())),20, 30, 30, self.game.display)
+        if self.game.fps_counter:
+            self.fps = service.draw_text(str(int(self.game.clock.get_fps())),20, 30, 30, self.game.display)
         

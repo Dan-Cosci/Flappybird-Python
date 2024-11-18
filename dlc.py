@@ -65,7 +65,10 @@ class PipeyBird(DLC):
         self.mouse_pos = pygame.mouse.get_pos()
         
         # for debugging
-        self.fps = service.draw_text(str(int(self.game.clock.get_fps())),20, 30, 30, self.game.display)
+        if self.game.fps_counter:
+            self.fps = service.draw_text(str(int(self.game.clock.get_fps())),20, 30, 30, self.game.display)
+        
+        self.text = service.draw_text(str(self.game.score), 40, self.game.config["WIDTH"] / 2, self.game.config["HEIGHT"] / 8, self.game.display)
         
         self.game.bg.update()
         self.game.grd.update()
@@ -77,15 +80,15 @@ class PipeyBird(DLC):
 
         
         if len(self.game.dlc_bird_group) == 0:
-            self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], bird_height, 1.3, self.game.config)
+            self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], bird_height, 1.3, self.game.bird_config)
             self.game.dlc_bird_group.add(self.dlc_bird)
 
         elif len(self.game.dlc_bird_group) > 0:
             for birds in self.game.dlc_bird_group:
-                birds.rect.y =  service.sine(75,2000, 5, birds.rect.y)
-                if birds.rect.right < 50:
+                # birds.rect.y =  service.sine(50,2000, 2, birds.rect.y)
+                if birds.rect.right < 100:
                     if len(self.game.dlc_bird_group) < 2:
-                        self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], bird_height, 1.3, self.game.config)
+                        self.dlc_bird = bird.DLC_Bird(self.game.config["WIDTH"], bird_height, 1.3, self.game.bird_config)
                         self.game.dlc_bird_group.add(self.dlc_bird)
 
 

@@ -21,6 +21,8 @@ class Game():
         self.bird_config = self.config["bird_config"]
         self.config = self.config["config"]
 
+        self.fps_counter = self.config["fps_counter"]
+
         # initializing pygame and mixer module
         pygame.init()
         pygame.mixer.pre_init()
@@ -46,6 +48,7 @@ class Game():
         # for the game to not start immediately
         self.start = False
         self.bird_hit = False
+        self.ceiling_glitch = False
 
         # initializes the bird
         self.Flappy = bird.Bird(self.config["WIDTH"] / 2, self.config["HEIGHT"] / 2, 1.3, self.bird_config, self)
@@ -64,10 +67,10 @@ class Game():
         self.dlc_bird_group = pygame.sprite.Group()
 
         self.dlc_pipe_group = pygame.sprite.Group()
-        self.dlc_btm_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 - self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.2, self.pipe_config, self)
-        self.dlc_top_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 + self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.2, self.pipe_config, self, True)
-        self.dlc_pipe_group.add(self.dlc_btm_p)
+        self.dlc_top_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 - self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.2, self.pipe_config, self)
+        self.dlc_btm_p = pipe.DLC_pipe(self.config["WIDTH"] / 4, self.config["HEIGHT"] / 2 + self.pipe_config["dlc_pipe"]["PIPE_GAP"] / 2, 1.2, self.pipe_config, self, True)
         self.dlc_pipe_group.add(self.dlc_top_p)
+        self.dlc_pipe_group.add(self.dlc_btm_p)
 
         self.dlc_bg = background.DLC_Background(0, 0, 1.4, self.config)
         self.dlc_grd = ground.DLC_Ground(0, (self.config["HEIGHT"] - (self.config["HEIGHT"] // 6)), 1.2, self.config)
@@ -109,7 +112,9 @@ class Game():
         self.grd.draw(self.display)
 
         self.text = service.draw_text(str(self.score), 40, self.config["WIDTH"] / 2, self.config["HEIGHT"] / 8, self.display)
-        self.fps = service.draw_text(str(int(self.clock.get_fps())),20, 30, 30, self.display)
+        
+        if self.fps_counter:
+            self.fps = service.draw_text(str(int(self.clock.get_fps())),20, 30, 30, self.display)
 
         self.window.blit(self.display, (0,0))
         pygame.display.update()
@@ -193,6 +198,7 @@ class Game():
                             self.start = False
                             self.cur_menu.run_display = False
                             self.score = 0
+                            self.ceiling_glitch = False
 
                     # dlc button and actions
                     elif self.cur_menu.dlc_rect.collidepoint(self.cur_menu.mouse_pos):
@@ -254,6 +260,7 @@ class Game():
                             self.cur_menu.text_created = False
                             self.cur_menu.new_score = False
                             self.score = 0
+                            self.ceiling_glitch = False
                             
                             self.cur_menu = self.start_menu
                             
@@ -300,11 +307,19 @@ class Game():
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             self.swoosh_fx.play()
 
+                            self.restart_menu.new_score = False
+
                             self.cur_menu.state = "pipeybird"
                             self.dlc_play.run_dlc = True
                             self.start = False
                             self.cur_menu.run_display = False
                             self.score = 0
+
+                            # resets pipes and empty the bird group
+                            self.dlc_top_p.pipe_reset()
+                            self.dlc_btm_p.pipe_reset()
+                            self.dlc_bird_group.empty()
+
 
                     # dlc button and actions
                     elif self.cur_menu.vanilla_rect.collidepoint(self.cur_menu.mouse_pos):
@@ -347,8 +362,8 @@ class Game():
                 # game controls
                 elif self.cur_menu.state == "pipeybird":
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        self.dlc_btm_p.pipe_jump()
                         self.dlc_top_p.pipe_jump()
+                        self.dlc_btm_p.pipe_jump()
                         self.flap_fx.play()
 
                 # restart menu controls
@@ -362,6 +377,20 @@ class Game():
 
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             self.swoosh_fx.play()
+                            
+                            self.cur_menu.new_score = False
+
+                            self.cur_menu.run_display = False
+                            self.cur_menu = self.start_menu
+                            self.cur_menu.state = "pipeybird"
+                            self.dlc_play.run_dlc = True
+                            self.start = False
+                            self.score = 0
+
+                            # resets pipes and empty the bird group
+                            self.dlc_top_p.pipe_reset()
+                            self.dlc_btm_p.pipe_reset()
+                            self.dlc_bird_group.empty()
 
                     # menu button and actions
                     elif self.cur_menu.menu_rect.collidepoint(self.cur_menu.mouse_pos):
@@ -391,6 +420,16 @@ class Game():
             for tubo in self.pipe_group:
                 if self.Flappy.img_rect.colliderect(tubo.rect):
                     self.bird_hit = True
+                    
+                    if not self.sound_played:
+                        self.hit_fx.play()
+                        self.sound_played = True
+
+                # tried to cheat
+                if self.Flappy.img_rect.y <= 0:
+                    self.bird_hit = True
+
+                    self.ceiling_glitch = True
                     
                     if not self.sound_played:
                         self.hit_fx.play()
@@ -452,8 +491,56 @@ class Game():
 
 
         elif self.cur_menu.state == "pipeybird":
-            if pygame.sprite.groupcollide(self.dlc_bird_group, self.dlc_pipe_group, False, False):
-                print("collide bithkjs")
+            
+            for birds in self.dlc_bird_group:
+                if self.dlc_pipe_group.sprites()[0].rect.left< birds.rect.left\
+                    and self.dlc_pipe_group.sprites()[0].rect.right > birds.rect.right:
+                    self.passed = True
+                
+                if self.dlc_pipe_group.sprites()[0].rect.left > birds.rect.right\
+                and self.passed:
+                    self.score += 1
+                    self.point_fx.play()
+                    self.passed = False
+                    
+
+            # colllision detection and death flag
+            if pygame.sprite.groupcollide(self.dlc_bird_group, self.dlc_pipe_group, False, False)\
+                or self.dlc_top_p.rect.colliderect(self.grd.img_rect)\
+                    or self.dlc_btm_p.rect.y <= 0:
+
+                # death actions
+                self.dlc_play.run_dlc = False
+                self.playing = False
+                self.death_fx.play()
+
+
+                # changing to the restart menu
+                self.cur_menu = "menu"
+                self.restart_menu.run_display = True
+                self.cur_menu = self.restart_menu
+
+                # checking if the score is new highscore
+                data = service.file_load(self.config["FILE_NAME"])
+                highscore = data["score"]["DLC_1_High"]
+
+                if self.score > highscore:
+                    self.cur_menu.new_score = True
+                    data["score"]["DLC_1_High"] = self.score
+                
+                service.file_save(self.config["FILE_NAME"], data)
+
+                # making quote for the restart screen screen
+                self.cur_menu.text_quote = service.quote(self.score, self.cur_menu.new_score)
+
+                
+                # resets pipes and empty the bird group
+                self.passed = False
+                self.ceiling_glitch = False
+                
+                self.dlc_top_p.pipe_reset()
+                self.dlc_btm_p.pipe_reset()
+                self.dlc_bird_group.empty()
 
 
                     

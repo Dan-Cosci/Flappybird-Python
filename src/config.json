@@ -6,7 +6,7 @@
         "GROUND_SPD": 5,
         "BG_SPD": 1,
 
-        "fps_counter" : true, 
+        "fps_counter" : false, 
         "FPS": 60,
         
         "FILE_NAME": "src/data.json"
@@ -24,7 +24,7 @@
         },
         "dlc_pipe" : {
             "PIPE_GRAV": 0.8,
-            "PIPE_JUMP": 14,
+            "PIPE_JUMP": 13,
             "PIPE_MAX_G": 15,
             "PIPE_GAP": 160
         }
@@ -32,6 +32,10 @@
     "bird_config" : {
         "BIRD_GRAV": 1.2,
         "BIRD_JUMP": 13,
-        "BIRD_MAX_G": 15
+        "BIRD_MAX_G": 15,
+
+        "dlc_config": {
+            "BIRD_SPD": 5
+        }
     }
 }

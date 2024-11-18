@@ -46,11 +46,13 @@ class DLC_pipe(pygame.sprite.Sprite):
         if orientation:
             self.image = pygame.transform.scale_by(self.image, scale)
             self.rect = self.image.get_rect(midtop = (x,y))
-        
+            self.reset_rect = self.image.get_rect(midtop = (x,y))
+
         else:
             self.image = pygame.transform.flip(self.image, False, True)
             self.image = pygame.transform.scale_by(self.image, scale)
             self.rect = self.image.get_rect(midbottom = (x,y))
+            self.reset_rect = self.image.get_rect(midbottom = (x,y))
         
         # gravity requirements
         self.g_index = self.config["PIPE_GRAV"]
@@ -65,6 +67,12 @@ class DLC_pipe(pygame.sprite.Sprite):
         
         self.rect.y += self.gravity
 
+
     def pipe_jump(self):
         self.gravity = 0
         self.gravity -= self.config["PIPE_JUMP"]
+
+    
+    def pipe_reset(self):
+        self.rect.x, self.rect.y = self.reset_rect.x, self.reset_rect.y
+        self.gravity = 0

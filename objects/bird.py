@@ -112,7 +112,7 @@ class DLC_Bird(pygame.sprite.Sprite):
         
         self.image = self.imgs[self.index]
         
-        self.rect.x -= self.config["GROUND_SPD"]
+        self.rect.x -= self.config["dlc_config"]["BIRD_SPD"]
         if self.rect.right <= 0:
             self.kill()
 
